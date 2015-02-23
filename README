@@ -19,14 +19,14 @@ DEPENDENCIES
 
 This module requires these other modules and libraries:
 
-=item LWP::UserAgent
-=item File::Path
-=item Date::Simple
-=item List::Util
+   LWP::UserAgent 
+   File::Path
+   Date::Simple
+   List::Util
 
 COPYRIGHT AND LICENCE
 
-This worrk is published under GPL v2.
+This worrk is published under GPL v3.0.
 
 Copyright (C) 2015 by Jörg Steinkamp
 
