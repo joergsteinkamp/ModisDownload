@@ -592,6 +592,10 @@ if something unforseen happens. This needs to be improved.
 
 =item Test the module on other operating systems.
 
+=item Use Carp where useful
+
+
+
 =back
 
 =head1 SEE ALSO
