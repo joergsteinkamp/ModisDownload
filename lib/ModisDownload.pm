@@ -329,10 +329,10 @@ sub createDownloadURLs(@) {
         if ($nNewURLs == 1) {
           push(@URLs, $newURLs[0]);
         } elsif ($nNewURLs < 1) {
-          warn(sprintf("Missing file for %s @ %s.\n", $pat, $date->format("%Y.%m.%d")));
+          warn(sprintf("$prod: Missing file for %s @ %s.\n", $pat, $date->format("%Y.%m.%d")));
         } else { 
           # check for duplicate files here and choose the latest one
-          warn(sprintf("%i files for %s @ %s, choosing the newest.\n", $nNewURLs, $pat, $date->format("%Y.%m.%d")));
+          warn(sprintf("$prod: %i files for %s @ %s, choosing the newest.\n", $nNewURLs, $pat, $date->format("%Y.%m.%d")));
           my $createDate = $newURLs[0];
           $createDate =~ s/\.hdf$//;
           $createDate =~ s/^.*\.//g;
