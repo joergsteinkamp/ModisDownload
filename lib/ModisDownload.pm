@@ -466,19 +466,43 @@ ModisDownload - Perl extension for downloading MODIS satellite data
 =head1 DESCRIPTION
 
 This module creates a list of URLs for downloading MODIS satellite data
-in standard hdf format. It loads metadata of all available products and their
-versions to three cache files under ~/.cache/ModisDownload/, which are
-read and used to create a list of desired data files for download. This
-URL list can be printed to STDOUT and used to download the data via wget.
+in standard hdf format. It loads metadata of all available products and
+their versions to three cache files under ~/.cache/ModisDownload/, which
+are read and used to create a list of desired data files for download.
+ThisURL list can be printed to STDOUT and used to download the data via
+wget.
 
 You need to supply the function getURLs with 
 
-=item the desired product key,
-=item the version (optionally),
-=item the date(s): either one exact date or start and end in the format "YYYY.MM.DD" as an anonymous array
-=item two further anonymous arrays for thr h and v values of the sinusoidal grid, if it is not a global dataset
+=over 1
 
-If not supplied, the default version number is "005" if available otherwise the highest available version.
+=item product ID
+
+the desired product key,
+
+=item version
+
+the version (optionally),
+
+=item dates
+
+the date(s): either one exact date or start and end in the format
+"YYYY.MM.DD" as an anonymous array.
+
+=item h
+
+anonymous arrays for the h of the sinusoidal grid, if it is not a global
+dataset.
+
+=item v
+
+anonymous arrays for the v of the sinusoidal grid, if it is not a global
+dataset.
+
+=back
+
+If not supplied, the default version number is "005" if available,
+otherwise the highest available version.
 
 
 =head1 FUNCTIONS
@@ -491,10 +515,10 @@ If not supplied, the default version number is "005" if available otherwise the 
 
   my $retval = initCache();
 
-This function initializes the cache files, which are used on every subsequent usage.
-The Cache consists of directory information and if the datasets are in one file for
-the whole world or on the sinusoidal grid. This speeds up any subsequent usage of
-the module.
+This function initializes the cache files, which are used on every
+subsequent usage. The Cache consists of directory information and if
+the datasets are in one file forthe whole world or on the sinusoidal
+grid. This speeds up any subsequent usage of the module.
 
 =head2 loadCache
 
@@ -514,7 +538,8 @@ This function loads the stored cache data to memory.
 
   my $retval = refreshCache();
 
-This function dowloads the directory structure again and writes new cache files.
+This function dowloads the directory structure again and writes new cache
+files.
 
 =head2 getVersions
 
@@ -542,23 +567,32 @@ by a dot (see example in the SYNOPSIS section).
 =for return a list of URLs to be downloaded.
 
 =for usage
+  my @URLs = getURLs($prod, $version, [@dates], [@h], [@v]);
 
-after initializing the cache, this function can be used to return a list of
-files, which can be downloaded p.e. via wget or your own download perl module.
+after initializing the cache, this function can be used to return a list
+offiles, which can be downloaded p.e. via wget or your own download perl
+module.
 
-ATTENTION: The "dates" "h" and "v" arguments only the maximum and minimum values
-are evaluated. So if you want to download data for Alaska and Australia, this should
-be done in two getURLs calls. Otherwise almost the whole world will be downloaded
-and this can very quickly results in several hundreds of Gigabytes to be downloaded.
+ATTENTION: The "dates" "h" and "v" arguments only the maximum and minimum 
+values are evaluated. So if you want to download data for Alaska and Australia,
+this should be done in two separate getURLs calls. Otherwise almost the whole
+world will be downloaded and this can very quickly results in several hundreds
+of Gigabytes to be downloaded.
 
 For examples see the SYNOPSIS section.
 
 =head1 TODO
 
+=over 4
+
 =item Wrinting a test.pl file
-=item So far the functions issue a warning or return a negative integer, if something
-unforseen happens. This needs to be improved.
+
+=item So far the functions issue a warning or return a negative integer,
+if something unforseen happens. This needs to be improved.
+
 =item Test the module on other operating systems.
+
+=back
 
 =head1 SEE ALSO
 
@@ -569,11 +603,11 @@ which happened quiet often for me.
 
 =head1 AUTHOR
 
-Jörg Steinkamp, <lt>joergsteinkamp@yahoo.de<gt>
+Joerg Steinkamp, joergsteinkamp@yahoo.de
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2015 by Jörg Steinkamp
+Copyright (C) 2015 by Joerg Steinkamp
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.20.1 or,
