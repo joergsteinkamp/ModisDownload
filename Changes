@@ -1,0 +1,6 @@
+Revision history for Perl extension ModisDownload.
+
+0.01  Thu Feb 19 14:39:14 2015
+	- original version; created by h2xs 1.23 with options
+		-AXc -n ModisDownload
+
