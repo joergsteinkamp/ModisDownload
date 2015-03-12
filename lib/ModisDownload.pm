@@ -23,7 +23,7 @@ our %EXPORT_TAGS = ( 'all' => [ qw() ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw(loadCache initCache refreshCache getVersions getURLs modisDownload isGlobal);
 
-our $VERSION = '0.01';
+our $VERSION = '0.1';
 
 # Some variables used by several subroutines
 my $BASE_URL = "http://e4ftl01.cr.usgs.gov";
@@ -619,11 +619,11 @@ ModisDownload - Perl extension for downloading MODIS satellite data
   # output some info
   modisDownload(\@URLs1, ".", 1);
 
-  # download the list and be verbose
+  # download the file and be verbose
   # LARGE FILE! (1.3 GB)
-  modisDownload(\@URLs2, ".", 1);
+  #modisDownload(\@URLs2, ".", 1);
   # download the list to the current directory and force a reload of already existing files
-  modisDownload(\@URLs2, ".", 1, 1);
+  #modisDownload(\@URLs2, ".", 1, 1);
 
 =head1 DESCRIPTION
 
