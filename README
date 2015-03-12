@@ -21,12 +21,13 @@ This module requires these other modules and libraries:
 
    LWP::UserAgent 
    File::Path
+   File::Basename
    Date::Simple
    List::Util
 
 COPYRIGHT AND LICENCE
 
-This worrk is published under GPL v3.0.
+This work is published under GPL v3.0.
 
 Copyright (C) 2015 by Jörg Steinkamp
 
