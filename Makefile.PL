@@ -3,11 +3,11 @@ use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 WriteMakefile(
-    NAME              => 'ModisDownload',
-    VERSION_FROM      => 'lib/ModisDownload.pm', # finds $VERSION, requires EU::MM from perl >= 5.5
+    NAME              => 'WebService::MODIS',
+    VERSION_FROM      => 'lib/WebService/MODIS.pm', # finds $VERSION, requires EU::MM from perl >= 5.5
     PREREQ_PM         => {}, # e.g., Module::Name => 1.1
-    ABSTRACT_FROM     => 'lib/ModisDownload.pm', # retrieve abstract from module
-    AUTHOR            => 'Jörg Steinkamp <jsteinkamp@>',
+    ABSTRACT_FROM     => 'lib/WebService/MODIS.pm', # retrieve abstract from module
+    AUTHOR            => 'Jörg Steinkamp <joergsteinkamp@yahoo.de>',
     #LICENSE           => 'perl',
     #Value must be from legacy list of licenses here
     #http://search.cpan.org/perldoc?Module%3A%3ABuild%3A%3AAPI

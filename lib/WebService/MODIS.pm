@@ -1,4 +1,4 @@
-package ModisDownload;
+package WebService::MODIS;
 
 use 5.020001;
 use strict;
@@ -16,12 +16,12 @@ our @ISA = qw(Exporter);
 # names by default without a very good reason. Use EXPORT_OK instead.
 # Do not simply export all your public functions/methods/constants.
 
-# This allows declaration       use ModisDownload ':all';
+# This allows declaration       use WebService::MODIS ':all';
 # If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
 # will save memory.
 our %EXPORT_TAGS = ( 'all' => [ qw() ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-our @EXPORT = qw(loadCache initCache refreshCache getVersions getURLs modisDownload isGlobal);
+our @EXPORT = qw(loadCache initCache refreshCache getVersions getURLs download isGlobal);
 
 our $VERSION = '0.1';
 
@@ -41,7 +41,7 @@ my $defaultMODISVersion = "005";
 
 # Check the OS and exit if not implemented yet
 if ($^O eq "linux") {
-  $CacheDir = "$ENV{HOME}/.cache/ModisDownload";
+  $CacheDir = "$ENV{HOME}/.cache/WebService-MODIS";
 } else {
   die("OS \"$^O\" not implemented!\n");
 }
@@ -443,7 +443,7 @@ sub getURLs(@) {
 
 ########################################################################
 ### Function for download
-sub modisDownload (@) {
+sub download (@) {
   my $nArgs = @_;
   my $refURL = shift;
   my $success = 0;
@@ -581,13 +581,13 @@ __END__
 
 =head1 NAME
 
-ModisDownload - Perl extension for downloading MODIS satellite data
+WebService::MODIS - Perl extension for downloading MODIS satellite data
 
 =head1 SYNOPSIS
 
-  use ModisDownload;
+  use WebService::MODIS;
 
-  # to initialize the cache files in ~/.cache/ModisDownload
+  # to initialize the cache files in ~/.cache/WebService-MODIS
   initCache();
 
   # reinitialize the cache
@@ -748,7 +748,7 @@ For examples see the SYNOPSIS section.
 =for downloads file(s)
 
 =for usage
-  modisDownload({\@,$}URLs, [{\@,$}destination], [$verbose], [$forceReload]);
+  download({\@,$}URLs, [{\@,$}destination], [$verbose], [$forceReload]);
 
 continuous download of a list (as array reference) or a single file to a list
 (as array reference) of destination files or a destination directory. If a third

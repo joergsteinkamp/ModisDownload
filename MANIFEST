@@ -2,5 +2,5 @@ Changes
 Makefile.PL
 MANIFEST
 README
-t/ModisDownload.t
-lib/ModisDownload.pm
+t/WebService-MODIS.t
+lib/WebService/MODIS.pm
