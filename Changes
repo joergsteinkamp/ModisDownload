@@ -6,3 +6,9 @@ Revision history for Perl extension ModisDownload.
 
 0.1   Thu Mar 12 13:43:39 CET 2015
   - new function download
+
+0.2
+  - changed name to WebService::MODIS
+
+1.0   Mon Mar 16 14:06:56 CET 2015
+  - totally rewritten API, see SYNOPSIS, in manual

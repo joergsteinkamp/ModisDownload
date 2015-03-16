@@ -1,4 +1,4 @@
-ModisDownload version 0.01
+ModisDownload version 1.0
 ==========================
 
 This modules provides an interface to download MODIS satellite data.
@@ -19,7 +19,8 @@ DEPENDENCIES
 
 This module requires these other modules and libraries:
 
-   LWP::UserAgent 
+   Carp;
+   LWP::UserAgent
    File::Path
    File::Basename
    Date::Simple
