@@ -651,8 +651,6 @@ __END__
 WebService::MODIS - Perl extension for downloading MODIS satellite data
 
 =head1 SYNOPSIS
-
-  use lib "$ENV{HOME}/lib/perl/ModisDownload/lib";
   use WebService::MODIS;
 
   ### to initalize or reload the cached server side directory structure
@@ -689,7 +687,7 @@ WebService::MODIS - Perl extension for downloading MODIS satellite data
   # system("head -c 72268718 MCD12Q1.A2001001.h11v09.051.2014287162321.hdf.bak >MCD12Q1.A2001001.h11v09.051.2014287162321.hdf"); 
   # $lct->download;
 
-  ### intialize an empty object and popolate it with NDVI/EVI data 
+  ### intialize an empty object and populate it with NDVI/EVI data 
   ### for one tile of Europe for 3 years
   my $phen = WebService::MODIS->new();
   $phen->product("MYD13A2");
