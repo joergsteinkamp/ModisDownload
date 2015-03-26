@@ -552,7 +552,7 @@ sub download {
 ### and return a hash with the name of the first subdirectory 
 sub getAvailProducts () {
     my $caller = (caller)[0];
-    carp "This is an internal WebService::MODIS function. You should know what you are doing." if ($caller != "WebService::MODIS");
+    carp "This is an internal WebService::MODIS function. You should know what you are doing." if ($caller ne "WebService::MODIS");
 
     my %lookupTable = ();
     my $ua = new LWP::UserAgent;
@@ -615,7 +615,7 @@ sub getAvailDates() {
 ### return a file list for one product and date on the server
 sub getDateFullURLs($$) {
     my $caller = (caller)[0];
-    carp "This is an internal WebService::MODIS function. You should know what you are doing." if ($caller != "WebService::MODIS");
+    carp "This is an internal WebService::MODIS function. You should know what you are doing." if ($caller ne "WebService::MODIS");
 
     my $product = shift;
     my $date = shift;
