@@ -15,3 +15,6 @@ Revision history for Perl extension ModisDownload.
 
 1.1   Tue Apr 14 09:27:57 CEST 2015
   - changed the old t/ModisDownload.t file to t/WebService-MODIS.t, which was not done after renaming the module and added a mini test
+
+1.2   Tue Apr 14 17:48:53 CEST 2015
+  - added the dependencies to the Makefile.PL
