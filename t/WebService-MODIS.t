@@ -7,12 +7,21 @@
 
 use strict;
 use warnings;
+use LWP::Online 'online';
+use Test::More;
 
-use Test::More tests => 1;
-BEGIN { use_ok('WebService::MODIS') };
+use_ok('WebService::MODIS');
 
 #########################
 
 # Insert your test code below, the Test::More module is use()ed here so read
 # its man page ( perldoc Test::More ) for help writing this test script.
 
+
+SKIP: {
+  use WebService::MODIS;
+  skip 'Tests need online connection', 1, unless online();
+  ok(initCache, 'initialize memory cache');
+}
+
+done_testing();

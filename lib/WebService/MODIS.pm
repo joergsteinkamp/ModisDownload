@@ -16,7 +16,7 @@ our %EXPORT_TAGS = ( 'all' => [ qw(initCache readCache writeCache getCacheState 
 our @EXPORT_OK   = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT      = qw(initCache readCache writeCache getCacheState getVersions isGlobal);
 
-our $VERSION = '1.0';
+our $VERSION = '1.1';
 
 my %modisProducts     = ();
 my %modisDates        = ();
