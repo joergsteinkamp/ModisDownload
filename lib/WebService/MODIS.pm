@@ -585,7 +585,7 @@ sub getAvailProducts () {
 ### not ensure that the files are really there.
 sub getAvailDates() {
     my $caller = (caller)[0];
-    carp "This is an internal WebService::MODIS function. You should know what you are doing." if ($caller != "WebService::MODIS");
+    carp "This is an internal WebService::MODIS function. You should know what you are doing." if ($caller ne "WebService::MODIS");
 
     my %lookupTable = ();
 

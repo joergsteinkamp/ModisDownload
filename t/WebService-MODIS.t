@@ -1,5 +1,5 @@
 # Before 'make install' is performed this script should be runnable with
-# 'make test'. After 'make install' it should work as 'perl ModisDownload.t'
+# 'make test'. After 'make install' it should work as 'perl WebService::MODIS.t'
 
 #########################
 
@@ -9,7 +9,7 @@ use strict;
 use warnings;
 
 use Test::More tests => 1;
-BEGIN { use_ok('ModisDownload') };
+BEGIN { use_ok('WebService::MODIS') };
 
 #########################
 

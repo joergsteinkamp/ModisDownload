@@ -17,9 +17,10 @@ To install this module type the following:
 
 DEPENDENCIES
 
-This module requires these other modules and libraries:
+This module requires these other modules and libraries, where LWP::Online is only use by the test.pl file:
 
    Carp;
+   LWP::Online 
    LWP::UserAgent
    File::Path
    File::Basename
