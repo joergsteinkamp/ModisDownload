@@ -18,3 +18,9 @@ Revision history for Perl extension ModisDownload.
 
 1.2   Tue Apr 14 17:48:53 CEST 2015
   - added the dependencies to the Makefile.PL
+
+1.3   Fri May  8 21:02:41 CEST 2015
+  - removed OS check
+  - removed minimum version for required modules
+  - see: https://rt.cpan.org/Public/Bug/Display.html?id=104274
+

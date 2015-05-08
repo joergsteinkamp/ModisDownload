@@ -16,7 +16,7 @@ our %EXPORT_TAGS = ( 'all' => [ qw(initCache readCache writeCache getCacheState 
 our @EXPORT_OK   = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT      = qw(initCache readCache writeCache getCacheState getVersions isGlobal);
 
-our $VERSION = '1.2';
+our $VERSION = '1.3';
 
 my %modisProducts     = ();
 my %modisDates        = ();
@@ -30,14 +30,6 @@ my $cacheState = '';
 
 my $BASE_URL = "http://e4ftl01.cr.usgs.gov";
 my @DATA_DIR = ("MOLA", "MOLT", "MOTA");
-
-
-# Check the OS and exit if not implemented yet
-if ($^O eq "linux") {
-    $cacheDir = "$ENV{HOME}/.cache/WebService-MODIS";
-} else {
-    croak("OS '$^O' not implemented for Package WebService::MODIS!\n");
-}
 
 sub new {
     my $class = shift;
