@@ -24,3 +24,6 @@ Revision history for Perl extension ModisDownload.
   - removed minimum version for required modules
   - see: https://rt.cpan.org/Public/Bug/Display.html?id=104274
 
+1.4   Tue May 19 10:49:37 CEST 2015
+  - accidentially deleted $cacheDir initialization in previous version. Now defined by module File::HomeDir
+  - set minimum versions for List::Util, since "any" is not available before version 1.33)

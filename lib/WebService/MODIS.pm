@@ -4,8 +4,9 @@ use strict;
 use warnings;
 use Carp;
 use LWP::UserAgent;
-use File::Path qw(make_path);
 use File::Basename;
+use File::HomeDir;
+use File::Path qw(make_path);
 use Date::Simple;
 use List::Util qw(any max min none);
 
@@ -16,7 +17,7 @@ our %EXPORT_TAGS = ( 'all' => [ qw(initCache readCache writeCache getCacheState 
 our @EXPORT_OK   = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT      = qw(initCache readCache writeCache getCacheState getVersions isGlobal);
 
-our $VERSION = '1.3';
+our $VERSION = '1.4';
 
 my %modisProducts     = ();
 my %modisDates        = ();
@@ -30,6 +31,12 @@ my $cacheState = '';
 
 my $BASE_URL = "http://e4ftl01.cr.usgs.gov";
 my @DATA_DIR = ("MOLA", "MOLT", "MOTA");
+
+if (lc($^O) =~ /mswin/) {
+    $cacheDir = File::HomeDir->my_home()."/AppData/Local/WebService-MODIS";
+} else {
+    $cacheDir = File::HomeDir->my_home()."/.cache/WebService-MODIS";
+}
 
 sub new {
     my $class = shift;
