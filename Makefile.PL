@@ -8,6 +8,7 @@ WriteMakefile(
       'Carp'           => 0,
       'LWP::Online'    => 0,
       'LWP::UserAgent' => 0,
+      'File::HomeDir'  => 0,
       'File::Path'     => 0,
       'File::Basename' => 0,
       'Date::Simple'   => 0,
