@@ -17,7 +17,7 @@ our %EXPORT_TAGS = ( 'all' => [ qw(initCache readCache writeCache getCacheState 
 our @EXPORT_OK   = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT      = qw(initCache readCache writeCache getCacheState getVersions isGlobal);
 
-our $VERSION = '1.4';
+our $VERSION = '1.5';
 
 my %modisProducts     = ();
 my %modisDates        = ();
@@ -831,7 +831,7 @@ the server and overwritten.
 
 
 
-=HEAD1 METHODS for WebService::MODIS objects
+=head1 METHODS for WebService::MODIS objects
 
 =head2 product
 
