@@ -32,3 +32,6 @@ Revision history for Perl extension ModisDownload.
   - File::HomeDir dependency in Makefile.PL
   - fixed one POD error
 
+1.6   Thu Dec  3 13:28:23 CET 2015
+  - Removed initCache test, since it took too long
+

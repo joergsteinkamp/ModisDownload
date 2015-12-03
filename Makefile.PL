@@ -15,7 +15,7 @@ WriteMakefile(
       'List::Util'     => 1.33
 }, # e.g., Module::Name => 1.1
     ABSTRACT_FROM     => 'lib/WebService/MODIS.pm', # retrieve abstract from module
-    AUTHOR            => 'Jörg Steinkamp <joergsteinkamp@yahoo.de>',
+    AUTHOR            => 'Joerg Steinkamp <joergsteinkamp@yahoo.de>',
     #LICENSE           => 'perl',
     #Value must be from legacy list of licenses here
     #http://search.cpan.org/perldoc?Module%3A%3ABuild%3A%3AAPI
