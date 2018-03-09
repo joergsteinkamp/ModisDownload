@@ -24,16 +24,16 @@ our $VERSION = '2.0';
 
 ## Redefine the authentication function
 {
-    no warnings 'redefine';
-    sub LWP::UserAgent::get_basic_credentials {
-        my ($self, $realm, $url, $isproxy) = @_;
-        my $uri = URI->new($url);
-        if (my $tuple = Net::Netrc->lookup($uri->host)) {
-            return ($tuple->login, $tuple->password);
-        } else {
-            croak "Did not find username/password for machine '".$uri->host."' in ~/.netrc!\n";
-        }
+  no warnings 'redefine';
+  sub LWP::UserAgent::get_basic_credentials {
+    my ($self, $realm, $url, $isproxy) = @_;
+    my $uri = URI->new($url);
+    if (my $tuple = Net::Netrc->lookup($uri->host)) {
+      return ($tuple->login, $tuple->password);
+    } else {
+      croak "Did not find username/password for machine '".$uri->host."' in ~/.netrc!\n";
     }
+  }
 }
 
 my %modisProducts     = ();
@@ -50,39 +50,39 @@ my $BASE_URL = "https://e4ftl01.cr.usgs.gov";
 my @DATA_DIR = ("MOLA", "MOLT", "MOTA");
 
 if (lc($^O) =~ /mswin/) {
-    $cacheDir = File::HomeDir->my_home()."/AppData/Local/WebService-MODIS";
+  $cacheDir = File::HomeDir->my_home()."/AppData/Local/WebService-MODIS";
 } else {
-    $cacheDir = File::HomeDir->my_home()."/.cache/WebService-MODIS";
+  $cacheDir = File::HomeDir->my_home()."/.cache/WebService-MODIS";
 }
 
 sub new {
-    my $class = shift;
-    my %options = @_;
-    my $self = {
-        product      => '',
-        version      => '',
-        dates        => [],
-        h            => [],
-        v            => [],
-        ifExactDates => 0,
-        ifExactHV    => 0,
-        targetDir    => ".",
-        forceReload  => 0,
-        %options,
-        url          => [],
-    };
-    bless($self, $class);
+  my $class = shift;
+  my %options = @_;
+  my $self = {
+    product      => '',
+    version      => '',
+    dates        => [],
+    h            => [],
+    v            => [],
+    ifExactDates => 0,
+    ifExactHV    => 0,
+    targetDir    => ".",
+    forceReload  => 0,
+    %options,
+    url          => [],
+  };
+  bless($self, $class);
 
-    # User input error checks
-    $self->product($self->{product}) if ($self->{product} ne '');
-    $self->version($self->{version}) if ($self->{version} ne '');
-    $self->dates($self->{dates}) if (@{$self->{dates}} != 0);
-    $self->h($self->{h}) if (@{$self->{h}} != 0);
-    $self->v($self->{v}) if (@{$self->{v}} != 0);
-    $self->ifExactDates($self->{ifExactDates}) if ($self->{ifExactDates} != 0);
-    $self->ifExactHV($self->{ifExactHV}) if ($self->{ifExactHV} != 0);
+  # User input error checks
+  $self->product($self->{product}) if ($self->{product} ne '');
+  $self->version($self->{version}) if ($self->{version} ne '');
+  $self->dates($self->{dates}) if (@{$self->{dates}} != 0);
+  $self->h($self->{h}) if (@{$self->{h}} != 0);
+  $self->v($self->{v}) if (@{$self->{v}} != 0);
+  $self->ifExactDates($self->{ifExactDates}) if ($self->{ifExactDates} != 0);
+  $self->ifExactHV($self->{ifExactHV}) if ($self->{ifExactHV} != 0);
 
-    return($self);
+  return($self);
 }
 
 #######################################################################
@@ -110,111 +110,111 @@ sub getModisGlobal() {
 
 ### retrieve the directory structure from the server
 sub initCache {
-#    my $self = shift;
-    %modisProducts = getAvailProducts();
-    %modisDates    = getAvailDates(\%modisProducts);
-    for (keys %modisProducts) {
-        my $check = isGlobal($_);
-        $modisGlobal{$_} = $check;
-    }
-    $cacheState = "mem";
+#  my $self = shift;
+  %modisProducts = getAvailProducts();
+  %modisDates    = getAvailDates(\%modisProducts);
+  for (keys %modisProducts) {
+    my $check = isGlobal($_);
+    $modisGlobal{$_} = $check;
+  }
+  $cacheState = "mem";
 }
 
 ### load the previously saved server side directory structure from
 ### local files
 sub readCache {
-    #    my $self = shift;
-    my $arg   = shift;
-    $cacheDir = $arg if ($arg);
-    croak "Cache directory '$cacheDir' does not exist. Use 'writeCache' create it first or check your parameter!" if (!-d $cacheDir);
+  #    my $self = shift;
+  my $arg   = shift;
+  $cacheDir = $arg if ($arg);
+  croak "Cache directory '$cacheDir' does not exist. Use 'writeCache' create it first or check your parameter!" if (!-d $cacheDir);
 
-    if (-s "$cacheDir/$modisProductsFile") {
-        %modisProducts = do "$cacheDir/$modisProductsFile";
-        if (-s "$cacheDir/$modisDatesFile") {
-            %modisDates = do "$cacheDir/$modisDatesFile";
-            if (-s "$cacheDir/$modisGlobalFile") {
-                %modisGlobal = do "$cacheDir/$modisGlobalFile";
-                $cacheState = "file";
-                return;
-            } else {
-                croak "Cache file '$cacheDir/$modisGlobalFile' is empty. Use 'writeCache' to recreate it.";
-            }
-        } else {
-            croak "Cache file '$cacheDir/$modisDatesFile' is empty. Use 'writeCache' to recreate it.";
-        }
+  if (-s "$cacheDir/$modisProductsFile") {
+    %modisProducts = do "$cacheDir/$modisProductsFile";
+    if (-s "$cacheDir/$modisDatesFile") {
+      %modisDates = do "$cacheDir/$modisDatesFile";
+      if (-s "$cacheDir/$modisGlobalFile") {
+        %modisGlobal = do "$cacheDir/$modisGlobalFile";
+        $cacheState = "file";
+        return;
+      } else {
+        croak "Cache file '$cacheDir/$modisGlobalFile' is empty. Use 'writeCache' to recreate it.";
+      }
     } else {
-        croak "Cache file '$cacheDir/$modisProductsFile' is empty. Use 'writeCache' to recreate it.";
+      croak "Cache file '$cacheDir/$modisDatesFile' is empty. Use 'writeCache' to recreate it.";
     }
-    return(99);
+  } else {
+    croak "Cache file '$cacheDir/$modisProductsFile' is empty. Use 'writeCache' to recreate it.";
+  }
+  return(99);
 }
 
 ### write the server side directory structure to local files
 sub writeCache {
-    #    my $self = shift;
-    my $arg   = shift;
-    $cacheDir = $arg if ($arg);
+  #    my $self = shift;
+  my $arg   = shift;
+  $cacheDir = $arg if ($arg);
 
-    croak "Nothing cached yet!" if ($cacheState eq '');
-    carp "Rewriting old cache to file" if ($cacheState eq 'file'); 
+  croak "Nothing cached yet!" if ($cacheState eq '');
+  carp "Rewriting old cache to file" if ($cacheState eq 'file');
 
-    if ( ! -d $cacheDir ) {
-        make_path($cacheDir) or croak "Could not create cache dir ('$cacheDir'): $!";
-    }
+  if ( ! -d $cacheDir ) {
+    make_path($cacheDir) or croak "Could not create cache dir ('$cacheDir'): $!";
+  }
 
-    my $fhd;
+  my $fhd;
 
-    open($fhd, ">", "$cacheDir/$modisProductsFile") or 
-        croak "cannot open '$cacheDir/$modisProductsFile' for writing: $!\n";
-    for (keys %modisProducts) {
-        print  $fhd "'$_' => '$modisProducts{$_}',\n";
-    }
-    close($fhd) or carp "close '$cacheDir/$modisProductsFile' failed: $!";
+  open($fhd, ">", "$cacheDir/$modisProductsFile") or
+    croak "cannot open '$cacheDir/$modisProductsFile' for writing: $!\n";
+  for (keys %modisProducts) {
+    print  $fhd "'$_' => '$modisProducts{$_}',\n";
+  }
+  close($fhd) or carp "close '$cacheDir/$modisProductsFile' failed: $!";
 
-    open($fhd, ">", "$cacheDir/$modisDatesFile") or
-        croak "cannot open '$cacheDir/$modisDatesFile' for writing: $!\n";
-    for (keys %modisDates) {
-        print  $fhd "'$_' => ['".join("', '", @{$modisDates{$_}})."'],\n";
-    }
-    close($fhd) or carp "close '$cacheDir/$modisDatesFile' failed: $!";
+  open($fhd, ">", "$cacheDir/$modisDatesFile") or
+    croak "cannot open '$cacheDir/$modisDatesFile' for writing: $!\n";
+  for (keys %modisDates) {
+    print  $fhd "'$_' => ['".join("', '", @{$modisDates{$_}})."'],\n";
+  }
+  close($fhd) or carp "close '$cacheDir/$modisDatesFile' failed: $!";
 
-    open($fhd, ">", "$cacheDir/$modisGlobalFile") or
-        croak "cannot open '$cacheDir/$modisGlobalFile' for writing: $!\n";
-    for (keys %modisGlobal) {
-        print $fhd "'$_' => $modisGlobal{$_},\n";
-    }
+  open($fhd, ">", "$cacheDir/$modisGlobalFile") or
+    croak "cannot open '$cacheDir/$modisGlobalFile' for writing: $!\n";
+  for (keys %modisGlobal) {
+    print $fhd "'$_' => $modisGlobal{$_},\n";
+  }
 
-    $cacheState = "file";
+  $cacheState = "file";
 }
 
 sub getCacheState {
 #    my $self = shift;
-    return $cacheState;
+  return $cacheState;
 }
 
 ### return a list of available version for a given product
 sub getVersions($) {
-    my $product  = shift;
-    my @versions = ();
-    foreach (keys %modisProducts) {
-        next if (! /$product/);
-        s/$product.//;
-        push(@versions, $_);
-    }
-    return(@versions);
+  my $product  = shift;
+  my @versions = ();
+  foreach (keys %modisProducts) {
+    next if (! /$product/);
+    s/$product.//;
+    push(@versions, $_);
+  }
+  return(@versions);
 }
 
 ### check is Product is global or on sinusoidal grid (with h??v?? in name)
 sub isGlobal($) {
-    my $product = shift;
-    my $global  = 1;
+  my $product = shift;
+  my $global  = 1;
 
-    croak "'$product' is not in the MODIS product list: Check name or refresh the cache." if (! any { /$product/ } keys %modisProducts);
+  croak "'$product' is not in the MODIS product list: Check name or refresh the cache." if (! any { /$product/ } keys %modisProducts);
 
-    my @flist = getDateFullURLs($product, ${$modisDates{$product}}[0]);
-    my $teststr = $flist[0];
-    $teststr =~ s/.*\///;
-    $global = 0 if ($teststr =~ /h[0-9]{2}v[0-9]{2}/);
-    return($global);
+  my @flist = getDateFullURLs($product, ${$modisDates{$product}}[0]);
+  my $teststr = $flist[0];
+  $teststr =~ s/.*\///;
+  $global = 0 if ($teststr =~ /h[0-9]{2}v[0-9]{2}/);
+  return($global);
 }
 
 ##################################################
@@ -222,122 +222,122 @@ sub isGlobal($) {
 ### or setting them
 
 sub product {
-    my $self = shift;
+  my $self = shift;
 
-    if (@_) {
-        if ($cacheState eq '') {
-            carp "Cache not initialized or loaded, cannot check availability of '$_[0]'.";
-        } else {
-            my $failed = 1;
-            $failed = 0 if any { /$_[0]\.[0-9]{3}/ } (keys %modisProducts);
-            croak "Product '$_[0]' not available!" if $failed;
-        }
-        $self->{product} = shift;
-        $self->{version} = '';
-        $self->{url} =[];
-        return;
+  if (@_) {
+    if ($cacheState eq '') {
+      carp "Cache not initialized or loaded, cannot check availability of '$_[0]'.";
+    } else {
+      my $failed = 1;
+      $failed = 0 if any { /$_[0]\.[0-9]{3}/ } (keys %modisProducts);
+      croak "Product '$_[0]' not available!" if $failed;
     }
-    return $self->{product};
+    $self->{product} = shift;
+    $self->{version} = '';
+    $self->{url} =[];
+    return;
+  }
+  return $self->{product};
 }
 
 sub version {
-    my $self = shift;
-    if (@_) {
-        $self->{version} = shift;
-        if ($self->{product} eq '') {
-            carp "No product specified yet, so specifying the version does not make sense.";
-        } else {
-            my @vers = getVersions($self->{product});
-            if (none {/$self->{version}/} @vers) {
-                carp "Version ".$self->{version}." does not exist! Resetting it to ''.";
-                $self->{version} = ''
-            }
-        }
-        $self->{url} = [];
-        return;
+  my $self = shift;
+  if (@_) {
+    $self->{version} = shift;
+    if ($self->{product} eq '') {
+      carp "No product specified yet, so specifying the version does not make sense.";
+    } else {
+      my @vers = getVersions($self->{product});
+      if (none {/$self->{version}/} @vers) {
+        carp "Version ".$self->{version}." does not exist! Resetting it to ''.";
+        $self->{version} = ''
+      }
     }
-    return $self->{version};
+    $self->{url} = [];
+    return;
+  }
+  return $self->{version};
 }
 
 sub dates {
-    my $self = shift;
-    if (@_) {
-        my $refDates = shift;
-        if ($self->{product} eq '') {
-            carp "No product specified yet, No availability check possible.";
-        } else {
-            # check availability 
-        }
-        $self->{dates} = $refDates;
-        $self->{url} = [];
-        return;
+  my $self = shift;
+  if (@_) {
+    my $refDates = shift;
+    if ($self->{product} eq '') {
+      carp "No product specified yet, No availability check possible.";
+    } else {
+      # check availability
     }
-    return @{$self->{dates}};
+    $self->{dates} = $refDates;
+    $self->{url} = [];
+    return;
+  }
+  return @{$self->{dates}};
 }
 
 sub h {
-    my $self = shift;
-    if (@_) {
-        my $refH = shift;
-        if (any {$_ < 0 or $_ > 35} @$refH) {
-            croak "Invalid h values supplied. Valid range: 0-35.";
-        }
-        $self->{h} = $refH;
-        $self->{url} = [];
-        return;
+  my $self = shift;
+  if (@_) {
+    my $refH = shift;
+    if (any {$_ < 0 or $_ > 35} @$refH) {
+      croak "Invalid h values supplied. Valid range: 0-35.";
     }
-    return @{$self->{h}};
+    $self->{h} = $refH;
+    $self->{url} = [];
+    return;
+  }
+  return @{$self->{h}};
 }
 
 sub v {
-    my $self = shift;
-    if (@_) {
-        my $refV = shift;
-        if (any {$_ < 0 or $_ > 17} @$refV) {
-            croak "Invalid v values supplied. Valid range: 0-17.";
-        }
-        $self->{v} = $refV;
-        $self->{url} = [];
-        return;
+  my $self = shift;
+  if (@_) {
+    my $refV = shift;
+    if (any {$_ < 0 or $_ > 17} @$refV) {
+      croak "Invalid v values supplied. Valid range: 0-17.";
     }
-    return @{$self->{v}};
+    $self->{v} = $refV;
+    $self->{url} = [];
+    return;
+  }
+  return @{$self->{v}};
 }
 
 sub ifExactDates {
-    my $self = shift;
-    if (@_) {
-        my $nDates = @{$self->{dates}};
-        carp "Sure you want to set this before setting the dates!" if ($nDates==0);
-        $self->{ifExactDates} = shift;
-        $self->{url} = [];
-        return;
-    }
-    return $self->{ifExactDates};
+  my $self = shift;
+  if (@_) {
+    my $nDates = @{$self->{dates}};
+    carp "Sure you want to set this before setting the dates!" if ($nDates==0);
+    $self->{ifExactDates} = shift;
+    $self->{url} = [];
+    return;
+  }
+  return $self->{ifExactDates};
 }
 
 sub ifExactHV {
-    my $self = shift;
-    if (@_) {
-        # include error checks
-        my $nH = @{$self->{h}};
-        my $nV = @{$self->{v}};
-        carp "You are setting 'ifExactHV' before setting 'h' and/or 'v'!" if ($nH==0 or $nV==0);
-        $self->{ifExactHV} = shift;
-        $self->{url} = [];
-        return;
-    }
-    if ($self->{ifExactHV}) {
-        my $nH = @{$self->{h}};
-        my $nV = @{$self->{v}};
-        carp "You set 'ifExactHV' before setting 'h' and/or 'v'!" if ($nH==0 or $nV==0);
-        carp "If ifExactHV is set, 'h' and 'v' should have equal length!" if ($nH != $nV);
-    }
-    return $self->{ifExactHV};
+  my $self = shift;
+  if (@_) {
+    # include error checks
+    my $nH = @{$self->{h}};
+    my $nV = @{$self->{v}};
+    carp "You are setting 'ifExactHV' before setting 'h' and/or 'v'!" if ($nH==0 or $nV==0);
+    $self->{ifExactHV} = shift;
+    $self->{url} = [];
+    return;
+  }
+  if ($self->{ifExactHV}) {
+    my $nH = @{$self->{h}};
+    my $nV = @{$self->{v}};
+    carp "You set 'ifExactHV' before setting 'h' and/or 'v'!" if ($nH==0 or $nV==0);
+    carp "If ifExactHV is set, 'h' and 'v' should have equal length!" if ($nH != $nV);
+  }
+  return $self->{ifExactHV};
 }
 
 sub url {
-    my $self = shift;
-    return @{$self->{url}};
+  my $self = shift;
+  return @{$self->{url}};
 }
 
 ########################################################################
@@ -346,308 +346,308 @@ sub url {
 ### This method also checks for all invalid combinations.
 
 sub createUrl {
-    my $self    = shift;
-    my $product = $self->{product};
+  my $self    = shift;
+  my $product = $self->{product};
 
-    croak "Product '$product' unknown!" if (! any { /$product/ } (keys %modisProducts));
+  croak "Product '$product' unknown!" if (! any { /$product/ } (keys %modisProducts));
 
-    my $version = $self->{version};
-    my @availVersions = getVersions($product);
+  my $version = $self->{version};
+  my @availVersions = getVersions($product);
 
-    ### check the MODIS product version
-    if ($version ne '') {
-        if (any { /$version/ } @availVersions) {
-            $product = "${product}.${version}";
-        } else {
-            croak "Version $version not available for $product (available: ".join(" ,", @availVersions).").\n";
-        }
+  ### check the MODIS product version
+  if ($version ne '') {
+    if (any { /$version/ } @availVersions) {
+      $product = "${product}.${version}";
     } else {
-        $version='000';
-        foreach (@availVersions) {
-            $version = $_ if (int($_) > int($version));
-        }
-        $product = "${product}.${version}";
+      croak "Version $version not available for $product (available: ".join(" ,", @availVersions).").\n";
     }
-    $self->{version} = $version;
+  } else {
+    $version='000';
+    foreach (@availVersions) {
+      $version = $_ if (int($_) > int($version));
+    }
+    $product = "${product}.${version}";
+  }
+  $self->{version} = $version;
 
-    ### check the product date availability and reset the $self->{dates} array 
-    if ($self->{ifExactDates}) {
-        my @dates = @{$self->{dates}};
-        my @cleanedDates = @dates;
-        foreach (@dates) {
-            my $failed = 0;
-            $failed = 1 if none { /$_/ } @{$modisDates{$product}};
-            if ($failed) {
-                @cleanedDates = grep { $_ != $_ } @cleanedDates;
-                carp "Date '$_' not available! Removing it from list";
-            }
-        }
-        @dates = ();
-        foreach (@cleanedDates) {
-            s/\./\-/g;
-            push(@dates, Date::Simple->new($_));
-        }
-        $self->{dates} = \@dates;
+  ### check the product date availability and reset the $self->{dates} array
+  if ($self->{ifExactDates}) {
+    my @dates = @{$self->{dates}};
+    my @cleanedDates = @dates;
+    foreach (@dates) {
+      my $failed = 0;
+      $failed = 1 if none { /$_/ } @{$modisDates{$product}};
+      if ($failed) {
+        @cleanedDates = grep { $_ != $_ } @cleanedDates;
+        carp "Date '$_' not available! Removing it from list";
+      }
+    }
+    @dates = ();
+    foreach (@cleanedDates) {
+      s/\./\-/g;
+      push(@dates, Date::Simple->new($_));
+    }
+    $self->{dates} = \@dates;
+  } else {
+    my @dates = @{$self->{dates}};
+    my @newDates = ();
+    foreach (@dates) {
+      s/\./\-/g;
+      push(@newDates, Date::Simple->new($_));
+    }
+    my @cleanedDates = ();
+    foreach (@{$modisDates{$product}}) {
+      s/\./\-/g;
+      my $modisDate = Date::Simple->new($_);
+      next if ($modisDate - min(@newDates) < 0);
+      next if ($modisDate - max(@newDates) > 0);
+      push(@cleanedDates, $modisDate);
+    }
+    $self->{dates} = \@cleanedDates;
+  }
+
+  ### check the h and v availability, but only if necessary
+  if (!$modisGlobal{$product}) {
+    my @h = @{$self->{h}};
+    my @v = @{$self->{v}};
+    if ($self->{ifExactHV}) {
+      my $nH = @{$self->{h}};
+      my $nV = @{$self->{v}};
+      if ($nH != $nV) {
+        carp "If ifExactHV is set, 'h' and 'v' should have equal length!" if ($nH != $nV);
+        @h = splice(@h, 0, min($nH, $nV));
+        @v = splice(@v, 0, min($nH, $nV));
+      }
     } else {
-        my @dates = @{$self->{dates}};
-        my @newDates = ();
-        foreach (@dates) {
-            s/\./\-/g;
-            push(@newDates, Date::Simple->new($_));
+      my @newH = ();
+      my @newV = ();
+      foreach my $h (min(@h)..max(@h)) {
+        foreach my $v (min(@v)..max(@v)) {
+          push(@newH, $h);
+          push(@newV, $v);
         }
-        my @cleanedDates = ();
-        foreach (@{$modisDates{$product}}) {
-            s/\./\-/g;
-            my $modisDate = Date::Simple->new($_);
-            next if ($modisDate - min(@newDates) < 0);
-            next if ($modisDate - max(@newDates) > 0);
-            push(@cleanedDates, $modisDate);
-        }
-        $self->{dates} = \@cleanedDates;
+      }
+      $self->{h} = \@newH;
+      $self->{v} = \@newV;
     }
+  }
 
-    ### check the h and v availability, but only if necessary
+  my @url = ();
+  foreach (@{$self->{dates}}) {
+    my @fullUrl = getDateFullURLs($product, $_->format("%Y.%m.%d"));
     if (!$modisGlobal{$product}) {
-        my @h = @{$self->{h}};
-        my @v = @{$self->{v}};
-        if ($self->{ifExactHV}) {
-            my $nH = @{$self->{h}};
-            my $nV = @{$self->{v}};
-            if ($nH != $nV) {
-                carp "If ifExactHV is set, 'h' and 'v' should have equal length!" if ($nH != $nV);
-                @h = splice(@h, 0, min($nH, $nV));
-                @v = splice(@v, 0, min($nH, $nV));
-            }
-        } else {
-            my @newH = ();
-            my @newV = ();
-            foreach my $h (min(@h)..max(@h)) {
-                foreach my $v (min(@v)..max(@v)) {
-                    push(@newH, $h);
-                    push(@newV, $v);
-                }
-            }
-            $self->{h} = \@newH;
-            $self->{v} = \@newV;
+      my $nHV = @{$self->{h}};
+      for (my $i=0; $i < $nHV; $i++) {
+        my $pat = sprintf("h%02iv%02i", ${$self->{h}}[$i], ${$self->{v}}[$i]);
+        my @newUrl;
+        foreach (@fullUrl) {
+          if (/$pat/) {
+            push(@newUrl, $_);
+          }
         }
-    }
-
-    my @url = ();
-    foreach (@{$self->{dates}}) {
-        my @fullUrl = getDateFullURLs($product, $_->format("%Y.%m.%d"));
-        if (!$modisGlobal{$product}) {
-            my $nHV = @{$self->{h}};
-            for (my $i=0; $i < $nHV; $i++) {
-                my $pat = sprintf("h%02iv%02i", ${$self->{h}}[$i], ${$self->{v}}[$i]);
-                my @newUrl;
-                foreach (@fullUrl) {
-                    if (/$pat/) {
-                        push(@newUrl, $_);
-                    }
-                }
-                my $nNewUrl = @newUrl;
-                if ($nNewUrl == 1) {
-                    push(@url, $newUrl[0]);
-                } elsif ($nNewUrl < 1) {
-                    carp(sprintf("$product: Missing file for %s @ %s.\n", $pat, $_->format("%Y.%m.%d")));
-                } else { 
-                    # check for duplicate files here and choose the latest one
-                    carp(sprintf("$product: %i files for %s @ %s, choosing the newest.\n", $nNewUrl, $pat, $_->format("%Y.%m.%d")));
-                    my $createDate = $newUrl[0];
-                    $createDate =~ s/\.hdf$//;
-                    $createDate =~ s/^.*\.//g;
-                    $createDate = int($createDate);
-                    my $newest = 0;
-                    for (my $k=0; $k < $nNewUrl; $k++) {
-                        s/\.hdf$//;
-                        s/^.*\.//g;
-                        if (int($_) > $createDate) {
-                            $newest = $k;
-                            $createDate = int($_);
-                        }  
-                    }
-                    push(@url, $newUrl[$newest]);
-                }
-            }
+        my $nNewUrl = @newUrl;
+        if ($nNewUrl == 1) {
+          push(@url, $newUrl[0]);
+        } elsif ($nNewUrl < 1) {
+          carp(sprintf("$product: Missing file for %s @ %s.\n", $pat, $_->format("%Y.%m.%d")));
         } else {
-           my $nUrl = @fullUrl;
-            if ($nUrl == 1) {
-                push(@url, $fullUrl[0]);
-            } elsif ($nUrl < 1) {
-                carp(sprintf("$product: Missing file @ %s.\n", $_->format("%Y.%m.%d")));
-            } else { 
-                # check for duplicate files here and choose the latest one
-                warn(sprintf("$product: %i files @ %s, choosing the newest.\n", $nUrl, $_->format("%Y.%m.%d")));
-                my $createDate = $fullUrl[0];
-                $createDate =~ s/\.hdf$//;
-                $createDate =~ s/^.*\.//g;
-                $createDate = int($createDate);
-                my $newest = 0;
-                for (my $k=0; $k < $nUrl; $k++) {
-                    s/\.hdf$//;
-                    s/^.*\.//g;
-                    if (int($_) > $createDate) {
-                        $newest = $k;
-                        $createDate = int($_);
-                    }  
-                }
-                push(@url, $fullUrl[$newest]);
+          # check for duplicate files here and choose the latest one
+          carp(sprintf("$product: %i files for %s @ %s, choosing the newest.\n", $nNewUrl, $pat, $_->format("%Y.%m.%d")));
+          my $createDate = $newUrl[0];
+          $createDate =~ s/\.hdf$//;
+          $createDate =~ s/^.*\.//g;
+          $createDate = int($createDate);
+          my $newest = 0;
+          for (my $k=0; $k < $nNewUrl; $k++) {
+            s/\.hdf$//;
+            s/^.*\.//g;
+            if (int($_) > $createDate) {
+              $newest = $k;
+              $createDate = int($_);
             }
+          }
+          push(@url, $newUrl[$newest]);
         }
+      }
+    } else {
+      my $nUrl = @fullUrl;
+      if ($nUrl == 1) {
+        push(@url, $fullUrl[0]);
+      } elsif ($nUrl < 1) {
+        carp(sprintf("$product: Missing file @ %s.\n", $_->format("%Y.%m.%d")));
+      } else {
+        # check for duplicate files here and choose the latest one
+        warn(sprintf("$product: %i files @ %s, choosing the newest.\n", $nUrl, $_->format("%Y.%m.%d")));
+        my $createDate = $fullUrl[0];
+        $createDate =~ s/\.hdf$//;
+        $createDate =~ s/^.*\.//g;
+        $createDate = int($createDate);
+        my $newest = 0;
+        for (my $k=0; $k < $nUrl; $k++) {
+          s/\.hdf$//;
+          s/^.*\.//g;
+          if (int($_) > $createDate) {
+            $newest = $k;
+            $createDate = int($_);
+          }
+        }
+        push(@url, $fullUrl[$newest]);
+      }
     }
-    $self->{url} = \@url;
+  }
+  $self->{url} = \@url;
 }
 
 ########################################################################
 ### method for download
 
 sub download {
-    my $self = shift;
-    my $arg  = shift;
-    $self->{targetDir} = $arg if ($arg);
-    $arg = shift;
-    $self->{forceReload} = $arg if ($arg);
+  my $self = shift;
+  my $arg  = shift;
+  $self->{targetDir} = $arg if ($arg);
+  $arg = shift;
+  $self->{forceReload} = $arg if ($arg);
 
-    my $nUrl = @{$self->{url}};
+  my $nUrl = @{$self->{url}};
 
-    $self->createUrl if ($nUrl == 0);
-    $nUrl = @{$self->{url}};
+  $self->createUrl if ($nUrl == 0);
+  $nUrl = @{$self->{url}};
 
-    if (! -d $self->{targetDir}) {
-        make_path($self->targetDir) or croak "Cannot create directory '$self->{targetDir}': $!\n";
+  if (! -d $self->{targetDir}) {
+    make_path($self->targetDir) or croak "Cannot create directory '$self->{targetDir}': $!\n";
+  }
+
+  # adjusted from http://stackoverflow.com/questions/6813726/continue-getting-a-partially-downloaded-file
+  my $ua = LWP::UserAgent->new(cookie_jar => HTTP::Cookies->new());
+
+  for (my $i=0; $i < $nUrl; $i++) {
+    my $file = $self->{targetDir}."/".basename(@{$self->{url}}[$i]);
+    unlink($file) if ($self->{forceReload} && -f $file);
+    open(my $fh, '>>:raw', $file) or croak "Cannot open '$file': $!\n";
+    my $bytes = -s $file;
+    my $res;
+    if ( $bytes && ! $self->{forceReload}) {
+      #print "resume ${$self->{url}}[$i] -> $file ($bytes) " if ($verbose);
+      $res = $ua->get(
+        ${$self->{url}}[$i],
+        'Range' => "bytes=$bytes-",
+        ':content_cb' => sub { my ( $chunk ) = @_; print $fh $chunk; }
+          );
+    } else {
+      #print "$URL[$i] -> $destination[$i] " if ($verbose);
+      $res = $ua->get(
+        ${$self->{url}}[$i],
+        ':content_cb' => sub { my ( $chunk ) = @_; print $fh $chunk; }
+          );
     }
+    close $fh;
 
-    # adjusted from http://stackoverflow.com/questions/6813726/continue-getting-a-partially-downloaded-file
-    my $ua = LWP::UserAgent->new(cookie_jar => HTTP::Cookies->new());
-
-    for (my $i=0; $i < $nUrl; $i++) {
-        my $file = $self->{targetDir}."/".basename(@{$self->{url}}[$i]);
-        unlink($file) if ($self->{forceReload} && -f $file);
-        open(my $fh, '>>:raw', $file) or croak "Cannot open '$file': $!\n";
-        my $bytes = -s $file;
-        my $res;
-        if ( $bytes && ! $self->{forceReload}) {
-            #print "resume ${$self->{url}}[$i] -> $file ($bytes) " if ($verbose);
-            $res = $ua->get(
-                ${$self->{url}}[$i],
-                'Range' => "bytes=$bytes-",
-                ':content_cb' => sub { my ( $chunk ) = @_; print $fh $chunk; }
-                );
-        } else {
-            #print "$URL[$i] -> $destination[$i] " if ($verbose);
-            $res = $ua->get(
-                ${$self->{url}}[$i],
-                ':content_cb' => sub { my ( $chunk ) = @_; print $fh $chunk; }
-                );
-        }
-        close $fh;
-
-        my $status = $res->status_line;
-        if ( $status =~ /^(200|206|416)/ ) {
-            #print "OK\n" if ($verbose && $status =~ /^20[06]/);
-            #print "already complete\n" if ($verbose && $status =~ /^416/);
-        } else {
-            print "Unknown STATUS: '$status'!\n";
-        }
+    my $status = $res->status_line;
+    if ( $status =~ /^(200|206|416)/ ) {
+      #print "OK\n" if ($verbose && $status =~ /^20[06]/);
+      #print "already complete\n" if ($verbose && $status =~ /^416/);
+    } else {
+      print "Unknown STATUS: '$status'!\n";
     }
+  }
 }
 
 ###################################################
 ###################################################
-### Internal functions 
+### Internal functions
 
 ### retrieve a list of available MODIS Products
-### and return a hash with the name of the first subdirectory 
+### and return a hash with the name of the first subdirectory
 sub getAvailProducts () {
-    my $caller = (caller)[0];
-    carp "This is an internal WebService::MODIS function. You should know what you are doing." if ($caller ne "WebService::MODIS");
+  my $caller = (caller)[0];
+  carp "This is an internal WebService::MODIS function. You should know what you are doing." if ($caller ne "WebService::MODIS");
 
-    my %lookupTable = ();
-    my $ua = new LWP::UserAgent;
-    foreach my $subdir (@DATA_DIR) {
-        my $response = $ua->get("${BASE_URL}/${subdir}");
+  my %lookupTable = ();
+  my $ua = new LWP::UserAgent;
+  foreach my $subdir (@DATA_DIR) {
+    my $response = $ua->get("${BASE_URL}/${subdir}");
 
-        unless ($response->is_success) {
-            die $response->status_line;
-        }
-
-        my $content = $response->decoded_content();
-        my @content = split("\n", $content);
-        foreach (@content) {
-            next if (!/href="M/);
-            s/.*href="//;
-            s/\/.*//;
-
-            print "Key already exists\n" if exists $lookupTable{$_};
-            print "Key already defined\n" if defined $lookupTable{$_};
-            print "True\n" if $lookupTable{$_};
-
-            $lookupTable{$_} = $subdir;
-        }
+    unless ($response->is_success) {
+      die $response->status_line;
     }
-    return %lookupTable;
+
+    my $content = $response->decoded_content();
+    my @content = split("\n", $content);
+    foreach (@content) {
+      next if (!/href="M/);
+      s/.*href="//;
+      s/\/.*//;
+
+      print "Key already exists\n" if exists $lookupTable{$_};
+      print "Key already defined\n" if defined $lookupTable{$_};
+      print "True\n" if $lookupTable{$_};
+
+      $lookupTable{$_} = $subdir;
+    }
+  }
+  return %lookupTable;
 }
 
 ### get the available second level directories, named by date
 ### (YYYY.MM.DD) under which the hdf files reside. This does
 ### not ensure that the files are really there.
 sub getAvailDates() {
-    my $caller = (caller)[0];
-    carp "This is an internal WebService::MODIS function. You should know what you are doing." if ($caller ne "WebService::MODIS");
+  my $caller = (caller)[0];
+  carp "This is an internal WebService::MODIS function. You should know what you are doing." if ($caller ne "WebService::MODIS");
 
-    my %lookupTable = ();
+  my %lookupTable = ();
 
-    my $ua = new LWP::UserAgent;
-    foreach my $key (keys %modisProducts) {
-        my @dates=();
-        my $response = $ua->get("${BASE_URL}/$modisProducts{$key}/$key");
+  my $ua = new LWP::UserAgent;
+  foreach my $key (keys %modisProducts) {
+    my @dates=();
+    my $response = $ua->get("${BASE_URL}/$modisProducts{$key}/$key");
 
-        unless ($response->is_success) {
-            die $response->status_line;
-        }
-
-        my $content = $response->decoded_content();
-        my @content = split("\n", $content);
-        foreach (@content) {
-            next if (!/href="20[0-9]{2}\.[0-9]{2}\.[0-9]{2}/);
-            s/.*href="//;
-            s/\/.*//;
-            push(@dates, $_);
-        }
-        my $datesString = "['".join("', '", @dates)."']";
-        $lookupTable{$key} = eval $datesString;
-    }
-    return %lookupTable;
-}
-
-### return a file list for one product and date on the server
-sub getDateFullURLs($$) {
-    my $caller = (caller)[0];
-    carp "This is an internal WebService::MODIS function. You should know what you are doing." if ($caller ne "WebService::MODIS");
-
-    my $product = shift;
-    my $date = shift;
-
-    my @flist = ();
-
-    my $ua = new LWP::UserAgent;
-
-    my $response = $ua->get("${BASE_URL}/$modisProducts{$product}/$product/$date");
-  
     unless ($response->is_success) {
-        die $response->status_line;
+      die $response->status_line;
     }
 
     my $content = $response->decoded_content();
     my @content = split("\n", $content);
     foreach (@content) {
-        next if (!/href="M/);
-        next if (/hdf.xml/);
-        s/.*href="//;
-        s/".*//;
-        push(@flist, "${BASE_URL}/$modisProducts{$product}/$product/$date/$_");
+      next if (!/href="20[0-9]{2}\.[0-9]{2}\.[0-9]{2}/);
+      s/.*href="//;
+      s/\/.*//;
+      push(@dates, $_);
     }
-    return(@flist);
+    my $datesString = "['".join("', '", @dates)."']";
+    $lookupTable{$key} = eval $datesString;
+  }
+  return %lookupTable;
+}
+
+### return a file list for one product and date on the server
+sub getDateFullURLs($$) {
+  my $caller = (caller)[0];
+  carp "This is an internal WebService::MODIS function. You should know what you are doing." if ($caller ne "WebService::MODIS");
+
+  my $product = shift;
+  my $date = shift;
+
+  my @flist = ();
+
+  my $ua = new LWP::UserAgent;
+
+  my $response = $ua->get("${BASE_URL}/$modisProducts{$product}/$product/$date");
+
+  unless ($response->is_success) {
+    die $response->status_line;
+  }
+
+  my $content = $response->decoded_content();
+  my @content = split("\n", $content);
+  foreach (@content) {
+    next if (!/href="M/);
+    next if (/hdf.xml/);
+    s/.*href="//;
+    s/".*//;
+    push(@flist, "${BASE_URL}/$modisProducts{$product}/$product/$date/$_");
+  }
+  return(@flist);
 }
 
 1;
@@ -682,7 +682,7 @@ WebService::MODIS - Perl extension for downloading MODIS satellite data
   print "\n";
 
   ### new object of land cover type in Rondonia, Brazil for 2001 and 2010
-  my $lct = WebService::MODIS->new(product => "MCD12Q1", 
+  my $lct = WebService::MODIS->new(product => "MCD12Q1",
               dates => ['2001-01-01', '2010-01-01'], ifExactDates => 1,
               h => [11,12], v=> [9,10]);
   $lct->createUrl;
@@ -692,10 +692,10 @@ WebService::MODIS - Perl extension for downloading MODIS satellite data
   # $lct->download;
   ### test partial download
   # system("mv MCD12Q1.A2001001.h11v09.051.2014287162321.hdf MCD12Q1.A2001001.h11v09.051.2014287162321.hdf.bak");
-  # system("head -c 72268718 MCD12Q1.A2001001.h11v09.051.2014287162321.hdf.bak >MCD12Q1.A2001001.h11v09.051.2014287162321.hdf"); 
+  # system("head -c 72268718 MCD12Q1.A2001001.h11v09.051.2014287162321.hdf.bak >MCD12Q1.A2001001.h11v09.051.2014287162321.hdf");
   # $lct->download;
 
-  ### intialize an empty object and populate it with NDVI/EVI data 
+  ### intialize an empty object and populate it with NDVI/EVI data
   ### for one tile of Europe for 3 years
   my $phen = WebService::MODIS->new();
   $phen->product("MYD13A2");
@@ -719,13 +719,17 @@ You need the following information
 
 =over 1
 
-=item product ID: which product do you want
+=item * product ID:
+which product do you want
 
-=item [version]: not necessarily, but better so you know what you get. If not set, the highest version number is choosen.
+=item * [version]:
+not necessarily, but better so you know what you get. If not set, the highest version number is choosen.
 
-=item dates: for which time frame do you want the data
+=item * dates:
+for which time frame do you want the data
 
-=item h, v: values of desired MODIS sinusoidal grid (if not a global product is choosen)
+=item * h, v:
+values of desired MODIS sinusoidal grid (if not a global product is choosen)
 
 =back
 
@@ -774,7 +778,7 @@ directory otherwise from the given one.
 $ret = getCacheState;
 
 returns either '', 'mem or 'file', if nothing is cached, cache data
-was initialized from the server to memory or read from (or already written to ) 
+was initialized from the server to memory or read from (or already written to )
 local configuration files, respectively.
 
 =head2 getVersions
@@ -812,28 +816,37 @@ later on. Available options are:
 
 =over 1
 
-=item product: MODIS product ID as string
+=item * product:
+MODIS product ID as string
 
-=item version: desired version of MODIS product as string of three digits
+=item * version:
+desired version of MODIS product as string of three digits
 
-=item dates: anonymous string array of form YYYY-MM-DD or YYYY.MM.DD
+=item * dates:
+anonymous string array of form YYYY-MM-DD or YYYY.MM.DD
 
-=item ifexactDates: either 1, then the URL for the exact dates in the
+=item * ifexactDates:
+either 1, then the URL for the exact dates in the
 dates option is checked or 0 (default) then all possible data between
 the minimum und maximum dates is checked.
 
-=item h: the horizontal ID of the MODIS sinusoidal grid
+=item * h:
+the horizontal ID of the MODIS sinusoidal grid
 
-=item v: the vertical ID of the MODIS sinusoidal grid
+=item * v:
+the vertical ID of the MODIS sinusoidal grid
 
-=item ifExactHV: either 1, then the exact combination of option h and v
+=item * ifExactHV:
+either 1, then the exact combination of option h and v
 are checked or 0 (default), then all combinations between min and max
 h and v are checked. Setting it to 1 makes it possible to download
 several tiles far away from each other (p.e. Alaska and Australia).
 
-=item targetDir: where to save the data. Can be modified via method "download"
+=item * targetDir:
+where to save the data. Can be modified via method "download"
 
-=item forceReload: if set to 1 already files existing will be reloaded from
+=item * forceReload:
+if set to 1 already files existing will be reloaded from
 the server and overwritten.
 
 =back
@@ -974,11 +987,11 @@ createUrl is called from within here if 'url' is unset.
 
 =over 4
 
-=item Wrinting a test.pl file
+=item * Wrinting a test.pl file
 
-=item Test the module on other operating systems.
+=item * Test the module on other operating systems.
 
-=item make_path dies if the path can not be created, catch it or use something else 
+=item * make_path dies if the path can not be created, catch it or use something else
 for error handling
 
 =back
