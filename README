@@ -1,10 +1,10 @@
-ModisDownload version 2.0
-==========================
+WebService::MODIS version 2.0
+=============================
 
 This modules provides an interface to download MODIS satellite data.
 
 So far this module was only run on Debian linux. However, it should
-run on all other *nix systems as well.
+run on all other *nix systems, OSX and Windows as well.
 
 For debugging network issues, I recommend to include
 'use LWP::ConsoleLogger::Everywhere ();'
